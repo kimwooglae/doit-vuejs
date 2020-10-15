@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Vue Router</title>
+    </head>
+    <body>
+        <div id="app">
+            <h1>Vue router</h1>
+            <p>
+                <router-link to="/main"> Main </router-link>
+                <router-link to="/login"> Login </router-link>
+            </p>
+
+            <router-view></router-view>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+        <script src="https://unpkg.com/vue-router@3.0.1/dist/vue-router.js"></script>
+        <script>
+            var main = { template: '<div>main</div>'};
+            var login = { template: '<div>login</div>'};
+
+            var routes = [
+                {path: '/main', component: main},
+                {path: '/login', component: login}
+            ];
+
+            var router = new VueRouter({
+                routes,
+                mode: 'history'
+            });
+
+            var app = new Vue({
+                router
+            }).$mount('#app');
+        </script>
+
+    </body>

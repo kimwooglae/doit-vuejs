@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <div id="app">
+            <input v-model="message">
+            <div v-bind:id="idA">{{ message }}</div>
+            <div>{{ 22 + num * 11 + message }}</div>
+            <div>{{ computedMessage }}</div>
+            <button v-on:click="onClick">메시지 변경</button>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+        <script>
+            var app = new Vue({
+                data: {
+                    idA: 'abc',
+                    message : '메시지 입니다.',
+                    num : 10
+                },
+                methods: {
+                    onClick : function() {
+                        this.message = "New message";
+                    }
+                },
+                computed: {
+                    computedMessage: function() {
+                        return "computedMessage : (" + this.message + ")";
+                    }
+                },
+                watch: {
+                    message: (data) => console.log("message의 값이 바뀝니다.", data)
+                }
+            }).$mount('#app');
+        </script>
+    </body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Vue Component Registration</title>
+    </head>
+    <body>
+        <div id="app">
+            <h1>첫번째 영역  Data : {{firstData}}</h1>
+            <my-component v-bind:messagefromparent="message" v-on:receive-event-aa="receiveEvent1"></my-component>
+            <my-local-component1 v-bind:messagefromparent="message1"></my-local-component1>
+            <my-local-component2 v-bind:message_from_parent='message2'></my-local-component2>
+        </div>
+        <div id="app2">
+            <h1>두번째 영역</h1>
+            <my-component v-on:receive-event-aa="receiveEvent1"></my-component>
+            <my-local-component1></my-local-component1>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+        <script>
+
+            var eventBus = new Vue();
+
+            var cmp1 = {
+                template: '<div>로컬1 Data : {{cmp1Data}}, messagefromparent : {{ messagefromparent }}</div>',
+                props: ['messagefromparent'],
+                data: () => ({
+                    cmp1Data : 100
+                })
+            };
+            var cmp2 = {
+                template: '<div>로컬2 Data : {{cmp2Data}}, message_from_parent : {{ message_from_parent }}</div>',
+                props: ['message_from_parent'],
+                data : () => {return {
+                    cmp2Data : 200
+                }}
+            };
+
+            Vue.component('my-component', {
+                template: '<div>전역 컴포넌트 messagefromparent : {{ messagefromparent }} <button v-on:click="clickFunc">emit</button></div>',
+                props: ['messagefromparent'],
+                methods: {
+                    clickFunc : function() {
+                        this.$emit('receive-event-aa',9999);
+                        eventBus.$emit('receive-event-bus',10000);
+                    }
+                }
+            });
+
+            new Vue({
+                el : '#app',
+                components: {
+                    'my-local-component1' : cmp1,
+                    'my-local-component2' : cmp2
+                }, 
+                data : {
+                    firstData : 123,
+                    message : "first area and my-component",
+                    message1 : "first area and my-local-component1",
+                    message2 : "first area and my-local-component2"
+                }, 
+                methods: {
+                    receiveEvent1 : function(value) {
+                        console.log("[Vue1] receive event from child", value);
+                    }
+                }
+            });
+
+            new Vue({
+                el : '#app2',
+                methods: {
+                    receiveEvent1 : function(value) {
+                        console.log("[Vue2] receive event from child", value);
+                    }
+                },
+                created: function() {
+                    eventBus.$on('receive-event-bus', function(value) {
+                        console.log("receive event from eventBus", value);
+                    })
+                }
+            });            
+        </script>
+    </body>
+</html>
